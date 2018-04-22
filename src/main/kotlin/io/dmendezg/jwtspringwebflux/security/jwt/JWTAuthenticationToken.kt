@@ -1,9 +1,11 @@
 package io.dmendezg.jwtspringwebflux.security.jwt
 
+import io.jsonwebtoken.Claims
+import io.jsonwebtoken.Jws
 import org.springframework.security.core.Authentication
 import org.springframework.security.core.GrantedAuthority
 
-class JWTAuthenticationToken(private val token: String) : Authentication {
+class JWTAuthenticationToken(private val jws: Jws<Claims>) : Authentication {
 
     override fun getAuthorities(): MutableCollection<out GrantedAuthority> {
         return mutableListOf()
@@ -14,15 +16,15 @@ class JWTAuthenticationToken(private val token: String) : Authentication {
     }
 
     override fun getName(): String {
-        return this.token
+        return this.jws.body.subject
     }
 
     override fun getCredentials(): Any {
-        return this.token
+        return this.jws.body.getValue("scopes")
     }
 
     override fun getPrincipal(): Any {
-        return this.token
+        return this.jws.body.subject
     }
 
     override fun isAuthenticated(): Boolean {

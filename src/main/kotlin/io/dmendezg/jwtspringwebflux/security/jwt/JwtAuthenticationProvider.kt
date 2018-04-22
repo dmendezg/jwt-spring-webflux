@@ -10,8 +10,8 @@ class JwtAuthenticationProvider(private val key: String?) : ReactiveAuthenticati
     override fun authenticate(authentication: Authentication?): Mono<Authentication> {
         return try {
             val token = authentication!!.principal as String
-            Jwts.parser().setSigningKey(key).parseClaimsJws(token)
-            Mono.just(JWTAuthenticationToken(token))
+            val claims = Jwts.parser().setSigningKey(key).parseClaimsJws(token)
+            Mono.just(JWTAuthenticationToken(claims))
         } catch (e: SignatureException) {
             Mono.empty()
         }
